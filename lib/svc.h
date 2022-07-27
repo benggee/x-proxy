@@ -1,10 +1,5 @@
 #include "hh.h"
 
-typedef struct svc_context {
-	FILE *log_fd;
-	int  tcpserver_fd;
-} svc_ctx;
-
 
 svc_ctx *init_svc_context();
 
