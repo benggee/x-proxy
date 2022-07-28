@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	// check server status, unimplements.
 	// init_tcpserver(ctx, 3005);
 
-	test_route(ctx);
+	parse_route(ctx, "./proxy.conf");
 
 	printf("X proxy is running...");
 	
