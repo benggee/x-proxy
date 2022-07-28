@@ -1,19 +1,33 @@
 CC=gcc
-CFLAGS=
+# Binary name
+TARGET=xproxy
 
-OBJECTS=main.o svc.o tcpserver.o log.o xtime.o proxy.o route.o tcpclient.o
+BUILDDIR=build
+SRCDIR=src .
+INCLUDEDIR=src
+CFLAGS=$(patsubst %,-I%, $(INCLUDEDIR))
 
-.PHONY: clean
+# Find all .C files
+SOURCES=$(foreach dir, $(SRCDIR), $(wildcard $(dir)/*.c))
 
+# Header files
+INCLUDES=$(foreach dir,$(INCLUDEDIR), $(wildcard $(dir)/*.h))
 
-xproxy: $(OBJECTS) 
-	$(CC) -o xproxy $(OBJECTS)
+# Build all .O files
+OBJECTS=$(patsubst %.c,$(BUILDDIR)/%.o, $(notdir $(SOURCES)))
+VPATH=$(SRCDIR)
 
-%.o: src/%.c
-	$(CC) -c $(CFLAGS) $< -o $@
+.PHONY: clean build 
 
-%.o: %.c
-	$(CC) -c $(CFLAGS) $< -o $@
+$(BUILDDIR)/$(TARGET): $(OBJECTS)
+	$(CC) $^ -o $@ && cp -rf $(BUILDDIR)/xproxy ./
+
+# Create directory before comipling
+$(BUILDDIR)/%.o:%.c $(INCLUDES) | build
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf xproxy *.o
+	rm -rf $(BUILDDIR) xproxy
+
+build:
+	mkdir -p $(BUILDDIR)
